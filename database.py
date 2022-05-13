@@ -1,10 +1,8 @@
 import sqlite3
-from config import currencies_list
+from config import currencies_list, DATABASE, TABLE
 from api import pull_in_base
 from datetime import datetime
 
-DATABASE = 'currencies.db'
-TABLE = 'currencies'
 currencies = currencies_list.copy()
 currencies.remove('USD')
 

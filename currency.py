@@ -1,33 +1,57 @@
-# def show_currency(base_currency: str, currencies: list, base_num: int = 1) -> str:
-#     currencies_ = currencies.copy()
-#     if base_currency in currencies_:
-#         currencies_.remove(base_currency)
-#     currencies_str = ','.join(currencies_)
-#
-#     data = get_data(
-#         f'http://rest.coinapi.io/v1/exchangerate/{base_currency}?invert=false&filter_asset_id={currencies_str}&apikey={API_KEY}')
-#
-#     res = f'{base_num} {base_currency}:\n'
-#     for curr in currencies_:
-#         value = round(data[currencies_.index(curr)]['rate'], 2)*base_num
-#         res += f'\n{data[currencies_.index(curr)]["asset_id_quote"]} = {value}'
-#
-#     return res
+from config import DATABASE, TABLE
+import sqlite3
 
-# test_data = [
-#     {
-#       "time": "2022-05-05T13:17:31.6000000Z",
-#       "asset_id_quote": "AUD",
-#       "rate": 1.3941540148510710605325935409
-#     },
-#     {
-#       "time": "2022-05-05T13:17:31.6000000Z",
-#       "asset_id_quote": "RUB",
-#       "rate": 65.615607639294344313077279239
-#     },
-#     {
-#       "time": "2022-05-05T13:17:31.6000000Z",
-#       "asset_id_quote": "UAH",
-#       "rate": 32.748810183924745076389666322
-#     }
-#   ]
+def get_info(currencies: list) -> dict:
+    """Return dict of latest data
+    Args:
+        currencies (list): Currencies to fetch
+    Returns:
+        dict: dict of latest data in format {
+            'date' : '', 'rates': {'currency': value_float, .....}
+        }
+    """    
+    currencies_copy = currencies.copy()
+    if 'USD' in currencies_copy:
+        currencies_copy.remove('USD')
+
+    result = {'date': '', 'rates': {}}
+
+    with sqlite3.connect(DATABASE) as db:
+        db.row_factory = sqlite3.Row
+        query = f'SELECT date, {", ".join(currencies_copy)} FROM {TABLE} ORDER BY ID DESC LIMIT 1'
+        for item in db.execute(query):
+            result['date'] = item['date']
+            for cur in currencies_copy:
+                result['rates'][cur] = item[cur]
+
+    return result
+
+
+def calculating(base: str, data: dict, base_num: int = 1) -> dict:
+    if base != 'USD':
+        base_value = 1/data['rates'][base]
+        del data['rates'][base]
+        data['rates']['USD'] = base_value*base_num
+
+    else: 
+        base_value = 1
+
+    for key in data['rates']:
+        data['rates'][key] = data['rates'][key]*base_value*base_num
+
+
+    return data
+
+def show_result(base: str, currencies: any, base_num: int = 1) -> str:
+    base_noflag = base.split()[0]
+    currencies_noflag = list(currencies.keys())
+
+    data = calculating(base_noflag, get_info(currencies_noflag), base_num)
+
+    result = '\n---------------'
+
+    for item in data['rates']:
+        result += f'\n{item} {currencies[item]} = {round(data["rates"][item], 2)}'
+    result += f'\n---------------\nИнфомация на {data["date"]}'
+
+    return result
