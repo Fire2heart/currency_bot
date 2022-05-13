@@ -1,22 +1,18 @@
-from api import get_data
-
-
-def show_currency(base_currency: str, currencies: list, base_num: int = 1) -> str:
-    currencies_ = currencies.copy()
-    if base_currency in currencies_:
-        currencies_.remove(base_currency)
-    currencies_str = ','.join(currencies_)
-
-    data = get_data(
-        f'http://rest.coinapi.io/v1/exchangerate/{base_currency}?invert=false&filter_asset_id={currencies_str}&apikey={API_KEY}')
-
-    res = f'{base_num} {base_currency}:\n'
-    for curr in currencies_:
-        value = round(data[currencies_.index(curr)]['rate'], 2)*base_num
-        res += f'\n{data[currencies_.index(curr)]["asset_id_quote"]} = {value}'
-
-    return res
-
+# def show_currency(base_currency: str, currencies: list, base_num: int = 1) -> str:
+#     currencies_ = currencies.copy()
+#     if base_currency in currencies_:
+#         currencies_.remove(base_currency)
+#     currencies_str = ','.join(currencies_)
+#
+#     data = get_data(
+#         f'http://rest.coinapi.io/v1/exchangerate/{base_currency}?invert=false&filter_asset_id={currencies_str}&apikey={API_KEY}')
+#
+#     res = f'{base_num} {base_currency}:\n'
+#     for curr in currencies_:
+#         value = round(data[currencies_.index(curr)]['rate'], 2)*base_num
+#         res += f'\n{data[currencies_.index(curr)]["asset_id_quote"]} = {value}'
+#
+#     return res
 
 # test_data = [
 #     {

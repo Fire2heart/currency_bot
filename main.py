@@ -2,15 +2,24 @@ import telebot
 import re
 from config import TOKEN
 from telebot import types
-from currency import show_currency
 
 bot = telebot.TeleBot(TOKEN)
-currencies_flag_list = ['USD 🇺🇸', 'RUB 🇷🇺', 'UAH 🇺🇦', 'AUD 🇦🇺', 'CNY 🇨🇳', 'EUR 🇪🇺']
-currencies_list = ['USD', 'RUB', 'UAH', 'AUD', 'EUR']
-crypto_list = ['BTC', 'ETH', 'LTC', 'CZK', 'XLM', 'BNB']
+
+currencies_flag_dict = {'USD': '🇺🇸', 'EUR': '🇪🇺', 'RUB': '🇷🇺', 'UAH': '🇺🇦', 'PLN': '🇵🇱', 'AUD': '🇦🇺',
+                        'CNY': '🇨🇳', 'JPY': '🇯🇵', 'CHF': '🇨🇭', 'CAD': '🇨🇦', 'GBP': '🇬🇧'}
+
+crypto_list = ['BTC', 'ETH', 'SOL', 'BNB', 'XRP', 'LTC', 'CZK', 'XLM']
 start_menu_list = ['Crypto 💎', 'Currency 🏦']
 
 rule = '\d\s[A-Z, a-z]{3}'
+
+
+def build_buttons(flag_dict: dict) -> list:
+    buttons_list = []
+    for key, value in flag_dict.items():
+        temp = f'{key} {value}'
+        list.append(temp)
+    return buttons_list
 
 
 def build_menu(menu_list: list):
@@ -27,12 +36,19 @@ def start_message(message):
         message.chat.id, '🖖 Здарова! Выбирай че нада👇', reply_markup=markup)
     bot.send_message(message.chat.id, 'Либо напиши число и валюту: "2 btc"')
 
+
 @bot.message_handler(func=lambda message: message.text == 'Currency 🏦')
 def show_currency(message):
-    menu = currencies_flag_list.copy()
+    menu = build_buttons(currencies_flag_dict)
     menu.append('Назад ↩')
     markup = build_menu(menu_list=menu)
     bot.send_message(message.chat.id, 'Выбери валюту 💰', reply_markup=markup)
+
+
+@bot.message_handler(func=lambda message: message.text in crypto_list)
+def reply_currency(message):
+    # bot.reply_to(message, show_currency(message.text, currencies_flag_dict))
+
 
 @bot.message_handler(func=lambda message: message.text == 'Crypto 💎')
 def show_crypto(message):
@@ -41,22 +57,24 @@ def show_crypto(message):
     markup = build_menu(menu_list=menu)
     bot.send_message(message.chat.id, 'Выбери валюту 💰', reply_markup=markup)
 
+
 @bot.message_handler(func=lambda message: message.text in crypto_list)
 def reply_crypto(message):
-    bot.reply_to(message, show_currency(message.text, currencies_list))
+    # bot.reply_to(message, show_currency(message.text, currencies_flag_dict))
+
 
 @bot.message_handler(func=lambda message: message.text == 'Назад ↩')
 def back(message):
     markup = build_menu(menu_list=start_menu_list)
     bot.send_message(message.chat.id, 'Выбирай че нада👇', reply_markup=markup)
 
+
 @bot.message_handler(func=lambda message: True)
 def wtf(message):
     bot.reply_to(message, 'Моя не понимать 🤷‍♂')
 
+
 bot.infinity_polling()
-
-
 
 # @bot.message_handler(content_types=['text'])
 # def send_text(message):
@@ -94,15 +112,12 @@ bot.infinity_polling()
 #         bot.reply_to(message, 'Моя не понимать 🤷‍♂')
 
 
-
-     
-
-    # @bot.callback_query_handler(func=lambda call: True)
-    # def callback(call):
-    #     markup = show_buttons(currencies)
-    #     if call.message:
-    #         if call.data == 'USD 🇺🇸':
-    #             bot.edit_message_text(chat_id = call.message.chat.id,
-    #                                   message_id= call.message.id,  text= 'Money!', reply_markup=markup)
-    #         elif call.data == 'question2':
-    #             bot.send_message(call.message.chat.id, 'Ну и вали!!', reply_markup=markup)
+# @bot.callback_query_handler(func=lambda call: True)
+# def callback(call):
+#     markup = show_buttons(currencies)
+#     if call.message:
+#         if call.data == 'USD 🇺🇸':
+#             bot.edit_message_text(chat_id = call.message.chat.id,
+#                                   message_id= call.message.id,  text= 'Money!', reply_markup=markup)
+#         elif call.data == 'question2':
+#             bot.send_message(call.message.chat.id, 'Ну и вали!!', reply_markup=markup)
