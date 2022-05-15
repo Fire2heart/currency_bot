@@ -13,6 +13,7 @@ currencies_flag_dict = {'USD': '🇺🇸', 'EUR': '🇪🇺', 'RUB': '🇷🇺',
 crypto_list = ['BTC', 'ETH', 'SOL', 'BNB', 'XRP', 'LTC', 'CZK', 'XLM']
 start_menu_list = ['Crypto 💎', 'Currency 🏦']
 
+
 def build_buttons(flag_dict: dict) -> list:
     buttons_list = []
     for key, value in flag_dict.items():
@@ -67,10 +68,12 @@ def back(message):
     markup = build_menu(menu_list=start_menu_list)
     bot.send_message(message.chat.id, 'Выбирай че нада👇', reply_markup=markup)
 
+
 @bot.message_handler(func=lambda message: re.search(rule, message.text))
 def direct_convert(message):
     num, currency = message.text.split()
     bot.reply_to(message, show_result(currency.upper(), currencies_flag_dict, int(num)))
+
 
 @bot.message_handler(func=lambda message: True)
 def wtf(message):

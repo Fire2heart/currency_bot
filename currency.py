@@ -1,6 +1,7 @@
 from config import DATABASE, TABLE
 import sqlite3
 
+
 def get_info(currencies: list) -> dict:
     """Return dict of latest data
     Args:
@@ -9,7 +10,7 @@ def get_info(currencies: list) -> dict:
         dict: dict of latest data in format {
             'date' : '', 'rates': {'currency': value_float, .....}
         }
-    """    
+    """
     currencies_copy = currencies.copy()
     if 'USD' in currencies_copy:
         currencies_copy.remove('USD')
@@ -29,18 +30,18 @@ def get_info(currencies: list) -> dict:
 
 def calculating(base: str, data: dict, base_num: int = 1) -> dict:
     if base != 'USD':
-        base_value = 1/data['rates'][base]
+        base_value = 1 / data['rates'][base]
         del data['rates'][base]
-        data['rates']['USD'] = base_value*base_num
+        data['rates']['USD'] = base_value * base_num
 
-    else: 
+    else:
         base_value = 1
 
     for key in data['rates']:
-        data['rates'][key] = data['rates'][key]*base_value*base_num
-
+        data['rates'][key] = data['rates'][key] * base_value * base_num
 
     return data
+
 
 def show_result(base: str, currencies: any, base_num: int = 1) -> str:
     base_noflag = base.split()[0]

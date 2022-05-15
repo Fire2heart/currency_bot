@@ -1,13 +1,12 @@
 import sqlite3
 from config import currencies_list, DATABASE, TABLE
-from api import pull_in_base
 from datetime import datetime
 
 currencies = currencies_list.copy()
 currencies.remove('USD')
 
 
-def time_config() -> list:
+def time_config() -> str:
     now = datetime.now()
     time = now.strftime("%d/%m/%Y %H:%M:%S")
     return time
@@ -40,5 +39,3 @@ def insert(data: dict):
 
 
 init_table()
-info = pull_in_base(currencies)
-insert(info)
