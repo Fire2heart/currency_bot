@@ -46,6 +46,8 @@ def calculating(base: str, data: dict, base_num: int = 1) -> dict:
 def show_result(base: str, currencies: any, base_num: int = 1) -> str:
     base_noflag = base.split()[0]
     currencies_noflag = list(currencies.keys())
+    if base_noflag not in currencies_noflag:
+        currencies_noflag.append(base_noflag)
 
     data = calculating(base_noflag, get_info(currencies_noflag), base_num)
 
