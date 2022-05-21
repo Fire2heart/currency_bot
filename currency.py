@@ -38,7 +38,10 @@ def calculating(base: str, data: dict, base_num: int = 1) -> dict:
         base_value = 1
 
     for key in data['rates']:
-        data['rates'][key] = data['rates'][key] * base_value * base_num
+        if key == 'USD':
+            data['rates'][key] = data['rates'][key] * base_num
+        else:
+            data['rates'][key] = data['rates'][key] * base_value * base_num
 
     return data
 
@@ -54,7 +57,7 @@ def show_result(base: str, currencies: any, base_num: int = 1) -> str:
     result = '\n---------------'
 
     for item in data['rates']:
-        result += f'\n{item} {currencies[item]} = {round(data["rates"][item], 2)}'
+        result += f'\n{item} {currencies[item]} = {round(data["rates"][item], 3)}'
     result += f'\n---------------\nИнфомация на {data["date"]}'
 
     return result

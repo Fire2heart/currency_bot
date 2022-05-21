@@ -14,7 +14,6 @@ currencies_flag = ['USD 🇺🇸', 'EUR 🇪🇺', 'RUB 🇷🇺', 'UAH 🇺🇦
 
 crypto_list = ['BTC', 'ETH', 'SOL', 'BNB', 'XRP', 'LTC', 'CZK', 'XLM']
 
-setting_dict = {'USD ✅': 'usd', 'RUB ✅': 'rub', 'UAH ❌': 'uah'}
 sign_list = ['❌', '✅']
 
 start_menu_list = ['Crypto 💎', 'Currency 🏦', 'Settings ⚙']
