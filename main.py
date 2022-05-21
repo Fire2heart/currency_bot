@@ -98,7 +98,11 @@ def back(message):
 @bot.message_handler(func=lambda message: re.search(rule, message.text))
 def direct_convert(message):
     num, currency = message.text.split()
-    bot.reply_to(message, show_result(currency.upper(), currencies_flag_dict, int(num)))
+    params = DATA.get(message.chat.id)
+    if not params:
+        params = DEFAULT_PARAMS
+        DATA[message.chat.id] = DEFAULT_PARAMS
+    bot.reply_to(message, show_result(currency.upper(), DATA[message.chat.id], int(num)))
 
 
 @bot.message_handler(func=lambda message: message.text == 'Settings ⚙')
